@@ -6,17 +6,17 @@ const productQueries = {
     iterable: false,
   },
   information: {
-    query: "//*[@class='description-body']/div/p/text()[normalize-space()][1]",
+    query: "//*[@data-testid='description-body']/div/p/text()[normalize-space()][1]",
     iterable: false,
   },
   color: {
     query: "//*[@class='_3otxU']",
     iterable: false,
   },
-  // sizes: {
-  //   query: "//*[@data-testid='product-name']",
-  //   iterable: false,
-  // },
+  sizes: {
+    query: "//*[@class='_2_7UC']",
+    iterable: true,
+  },
   // price: {
   //   query: "//*[@data-testid='product-name']",
   //   iterable: false,
@@ -32,8 +32,23 @@ const productQueries = {
 }
 
 Object.entries(productQueries).forEach(productQuery => {
+
   const [productQueryKey, productQueryValue] = productQuery
   const productQueryEvaluated = document.evaluate(productQueryValue.query, document, null, XPathResult.ANY_TYPE, null);
+  if(productQueryValue.iterable) {
+    try {
+      var thisNode = productQueryEvaluated.iterateNext();
+    
+      while (thisNode) {
+        // JSObject[productQueryKey].push(thisNode.textContent)
+        // alert( thisNode.textContent );
+        thisNode = productQueryEvaluated.iterateNext();
+      }
+    }
+    catch (e) {
+      alert( 'Error: Document tree modified during iteration ' + e );
+    }
+  }
 
   JSObject[productQueryKey] = productQueryEvaluated.iterateNext()?.textContent;
   // console.log(productQueryEvaluated.iterateNext()?.textContent)

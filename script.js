@@ -86,3 +86,16 @@ Object.entries(productQueries).forEach(productQuery => {
 });
 
 console.log('JSON Result: \n' + JSON.stringify(ProductAttributes))
+
+
+/* -------------------------------------------- snapshot test: -------------------------------------------- */
+// visit https://www.31philliplim.com/pt/shopping/sleeveless-poplin-belted-midi-dress-16820575 to test
+const expectedResult = {"title":"Sleeveless Poplin Belted Midi Dress","information":"\nCrewneck sleeveless cotton dress with a self-tie waist belt. Contrast topstitching. Shirred mid length skirt. Keyhole buttoned back closure.","color":"optic white","sizes":[{"size":"0"},{"size":"2"},{"size":"4"},{"size":"6"},{"size":"8"},{"size":"10"},{"size":"12"}],"price":"782,00 €","imagesUrl":["https://cdn-images.farfetch-contents.com/3-1-phillip-lim-sleeveless-poplin-belted-midi-dress_16820575_33601058_800.jpg?c=2","https://cdn-images.farfetch-contents.com/3-1-phillip-lim-sleeveless-poplin-belted-midi-dress_16820575_33602043_800.jpg?c=2","https://cdn-images.farfetch-contents.com/3-1-phillip-lim-sleeveless-poplin-belted-midi-dress_16820575_33601059_800.jpg?c=2"]}
+
+if (location.href === "https://www.31philliplim.com/pt/shopping/sleeveless-poplin-belted-midi-dress-16820575") {
+  if(JSON.stringify(ProductAttributes) === JSON.stringify(expectedResult)) {
+    console.log('Test Passed')
+  } else {
+    console.log('Test Failed')
+  }
+}

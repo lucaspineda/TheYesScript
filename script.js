@@ -26,12 +26,14 @@ const productQueries = {
     query: "//*[@data-testid='product-name']/following-sibling::span[@class='_3x-d1']",
     iterable: false,
   },
-  // imagesUrl: {
-  //   query: "//*[@data-testid='product-name']",
-  //   iterable: false,
-  // },
-  // isAvailable: {
-  //   query: "//*[@data-testid='product-name']",
+  imagesUrl: {
+    query: "//*[contains(@class, '_2Smax')]//img",
+    iterable: true,
+    getSrc: true,
+  },
+  // Did not find any sold-out item to find a Xpath query for it :( 
+  // SoldOut: {
+  //   query: "",
   //   iterable: false,
   // },
 }
@@ -40,7 +42,6 @@ const checkElementAvailability = (productQueryValue, elementNode, itemAttributes
   const productNotAvailableQueryEvaluated = document.evaluate(productQueryValue.notAvailableQuery, document, null, XPathResult.ANY_TYPE, null);
   notAvailableNode = productNotAvailableQueryEvaluated.iterateNext();
   while (notAvailableNode) {
-    console.log(notAvailableNode.textContent, elementNode.textContent)
     if(notAvailableNode.textContent === elementNode.textContent) {
       itemAttributes.notAvailable = true
     }
@@ -60,11 +61,14 @@ Object.entries(productQueries).forEach(productQuery => {
         if(!ProductAttributes[productQueryKey]) {
           ProductAttributes[productQueryKey] = []
         }
-        itemAttributes[productQueryValue.label] = elementNode?.textContent
         if(productQueryValue.notAvailableQuery) {
+          itemAttributes[productQueryValue.label] = elementNode?.textContent
           checkElementAvailability(productQueryValue, elementNode, itemAttributes)
+          ProductAttributes[productQueryKey].push(itemAttributes)
         }
-        ProductAttributes[productQueryKey].push(itemAttributes)
+        else if(productQueryValue.getSrc) {
+          ProductAttributes[productQueryKey].push(elementNode?.src)
+        }
         elementNode = productQueryEvaluated.iterateNext();
       }
     }
@@ -81,4 +85,4 @@ Object.entries(productQueries).forEach(productQuery => {
   }
 });
 
-console.log(ProductAttributes)
+console.log('JSON Result: \n' + JSON.stringify(ProductAttributes))

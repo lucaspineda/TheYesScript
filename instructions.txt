@@ -1,0 +1,7 @@
+- In order to execute the script in the Google Chrome Console follow the procedure:
+
+  1 - Open a product page in Google Chrome
+  2 - Right click -> Select ‘Inspect’
+  3 - Select ‘Console’
+  4 - Paste the script into console, execute it
+  5 - The JSON Object will be logged at the end of execution.

@@ -5,3 +5,5 @@
   3 - Select ‘Console’
   4 - Paste the script into console, execute it
   5 - The JSON Object will be logged at the end of execution.
+
+- A basic snapshot test was created for the following url: https://www.31philliplim.com/pt/shopping/sleeveless-poplin-belted-midi-dress-16820575. Visit that to see the results.

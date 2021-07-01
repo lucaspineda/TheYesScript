@@ -1,4 +1,4 @@
-const JSObject = {}
+const ProductAttributes = {}
 
 const productQueries = {
   title: {
@@ -14,8 +14,13 @@ const productQueries = {
     iterable: false,
   },
   sizes: {
-    query: "//*[@class='_2_7UC']",
+    query: "//*[contains(@class, '_2_7UC')]",
     iterable: true,
+    label: 'size',
+    notAvailableQuery: "//*[contains(@class, 'm9yOG')]",
+    deep: {
+      notAvailable: "//*[contains(@class, 'm9yOG')]"
+    }
   },
   // price: {
   //   query: "//*[@data-testid='product-name']",
@@ -31,32 +36,49 @@ const productQueries = {
   // },
 }
 
-Object.entries(productQueries).forEach(productQuery => {
+const checkElementAvailability = (productQueryValue, elementNode, itemAttributes) => {
+  const productNotAvailableQueryEvaluated = document.evaluate(productQueryValue.notAvailableQuery, document, null, XPathResult.ANY_TYPE, null);
+  notAvailableNode = productNotAvailableQueryEvaluated.iterateNext();
+  while (notAvailableNode) {
+    console.log(notAvailableNode.textContent, elementNode.textContent)
+    if(notAvailableNode.textContent === elementNode.textContent) {
+      itemAttributes.notAvailable = true
+    }
+    notAvailableNode = productNotAvailableQueryEvaluated.iterateNext();
+  }
+}
 
+Object.entries(productQueries).forEach(productQuery => {
   const [productQueryKey, productQueryValue] = productQuery
   const productQueryEvaluated = document.evaluate(productQueryValue.query, document, null, XPathResult.ANY_TYPE, null);
   if(productQueryValue.iterable) {
     try {
-      var thisNode = productQueryEvaluated.iterateNext();
-    
-      while (thisNode) {
-        // JSObject[productQueryKey].push(thisNode.textContent)
-        // alert( thisNode.textContent );
-        thisNode = productQueryEvaluated.iterateNext();
+      let elementNode = productQueryEvaluated.iterateNext();
+      while (elementNode) {
+        let itemAttributes = {}
+        
+        if(!ProductAttributes[productQueryKey]) {
+          ProductAttributes[productQueryKey] = []
+        }
+        itemAttributes[productQueryValue.label] = elementNode?.textContent
+        if(productQueryValue.notAvailableQuery) {
+          checkElementAvailability(productQueryValue, elementNode, itemAttributes)
+        }
+        ProductAttributes[productQueryKey].push(itemAttributes)
+        elementNode = productQueryEvaluated.iterateNext();
       }
     }
-    catch (e) {
-      alert( 'Error: Document tree modified during iteration ' + e );
+    catch (error) {
+      alert( 'An error ocurred: ' + error );
+    }
+  } else {
+    try {
+      ProductAttributes[productQueryKey] = productQueryEvaluated.iterateNext()?.textContent;
+    }
+    catch(error) {
+      alert( 'An error ocurred: ' + error );
     }
   }
+});
 
-  JSObject[productQueryKey] = productQueryEvaluated.iterateNext()?.textContent;
-  // console.log(productQueryEvaluated.iterateNext()?.textContent)
-})
-
-// const productTitleEvaluated = document.evaluate(queries.producTitle, document, null, XPathResult.ANY_TYPE, null);
-// JSObject.productTitle = productTitleEvaluated.iterateNext().textContent;
-
-console.log(JSObject)
-
-// console.log(document.querySelectorAll('[data-testid="description-body"]'))
+console.log(ProductAttributes)

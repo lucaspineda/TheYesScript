@@ -22,10 +22,10 @@ const productQueries = {
       notAvailable: "//*[contains(@class, 'm9yOG')]"
     }
   },
-  // price: {
-  //   query: "//*[@data-testid='product-name']",
-  //   iterable: false,
-  // },
+  price: {
+    query: "//*[@data-testid='product-name']/following-sibling::span[@class='_3x-d1']",
+    iterable: false,
+  },
   // imagesUrl: {
   //   query: "//*[@data-testid='product-name']",
   //   iterable: false,
